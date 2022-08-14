@@ -106,25 +106,34 @@ var api = axios.create(); //start request
 api.interceptors.request.use(function (config) {
   //request
   if (localStorage.getItem("access_token")) {
-    config.headers = {
-      authorization: "Bearer ".concat(localStorage.getItem("access_token"))
-    };
+    config.headers.authorization = "Bearer ".concat(localStorage.getItem("access_token"));
   }
 
   return config;
 }, function (error) {
   console.log(22222);
-}); //end request
+}); //end requestx
 
 api.interceptors.response.use(function (config) {
   if (localStorage.getItem("access_token")) {
-    config.headers = {
-      authorization: "Bearer ".concat(localStorage.getItem("access_token"))
-    };
+    config.headers.authorization = "Bearer ".concat(localStorage.getItem("access_token"));
   }
 
   return config;
 }, function (error) {
+  if (error.response.data.message === "Token has expired") {
+    return axios.post("/api/auth/refresh", {}, {
+      headers: {
+        authorization: "Bearer ".concat(localStorage.getItem("access_token"))
+      }
+    }).then(function (res) {
+      localStorage.setItem("access_token", res.data.access_token);
+      error.config.headers.authorization = "Bearer ".concat(localStorage.getItem(res.data.access_token));
+      return api.request(error.config); // console.log(res.data.access_token);
+    }); // console.log("helo");
+  } // console.log(error.response.data.message);
+
+
   if (error.response.status === 401) {
     _router__WEBPACK_IMPORTED_MODULE_0__["default"].push({
       name: "user.login"
