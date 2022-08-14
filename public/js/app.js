@@ -5306,7 +5306,13 @@ var render = function render() {
         name: "user.registration"
       }
     }
-  }, [_vm._v("Registration")]), _vm._v(" "), _c("router-view")], 1);
+  }, [_vm._v("Registration")]), _vm._v(" "), _c("router-link", {
+    attrs: {
+      to: {
+        name: "user.personal"
+      }
+    }
+  }, [_vm._v("Personal")]), _vm._v(" "), _c("router-view")], 1);
 };
 
 var staticRenderFns = [];
@@ -5414,6 +5420,12 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_router__WEBPACK_IMPORTED_MOD
       return __webpack_require__.e(/*! import() */ "resources_js_components_User_Registration_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/User/Registration */ "./resources/js/components/User/Registration.vue"));
     },
     name: "user.registration"
+  }, {
+    path: "/users/personal",
+    component: function component() {
+      return __webpack_require__.e(/*! import() */ "resources_js_components_User_Personal_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/User/Personal */ "./resources/js/components/User/Personal.vue"));
+    },
+    name: "user.personal"
   }]
 }));
 
@@ -43410,7 +43422,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_components_Fruit_Index_vue":1,"resources_js_components_User_Login_vue":1,"resources_js_components_User_Registration_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_components_Fruit_Index_vue":1,"resources_js_components_User_Login_vue":1,"resources_js_components_User_Registration_vue":1,"resources_js_components_User_Personal_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

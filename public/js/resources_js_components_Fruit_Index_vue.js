@@ -11,14 +11,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../api */ "./resources/js/api.js");
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Index",
   data: function data() {
     return {
-      fruits: ''
+      fruits: ""
     };
   },
   mounted: function mounted() {
@@ -28,8 +27,8 @@ __webpack_require__.r(__webpack_exports__);
     getFruits: function getFruits() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/fruits').then(function (res) {
-        console.log(res);
+      //   axios.
+      _api__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/auth/fruits").then(function (res) {
         _this.fruits = res.data.data;
       });
     }
@@ -84,6 +83,56 @@ var staticRenderFns = [function () {
 }];
 render._withStripped = true;
 
+
+/***/ }),
+
+/***/ "./resources/js/api.js":
+/*!*****************************!*\
+  !*** ./resources/js/api.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./router */ "./resources/js/router.js");
+var _require = __webpack_require__(/*! axios */ "./node_modules/axios/index.js"),
+    axios = _require["default"];
+
+
+var api = axios.create(); //start request
+
+api.interceptors.request.use(function (config) {
+  //request
+  if (localStorage.getItem("access_token")) {
+    config.headers = {
+      authorization: "Bearer ".concat(localStorage.getItem("access_token"))
+    };
+  }
+
+  return config;
+}, function (error) {
+  console.log(22222);
+}); //end request
+
+api.interceptors.response.use(function (config) {
+  if (localStorage.getItem("access_token")) {
+    config.headers = {
+      authorization: "Bearer ".concat(localStorage.getItem("access_token"))
+    };
+  }
+
+  return config;
+}, function (error) {
+  if (error.response.status === 401) {
+    _router__WEBPACK_IMPORTED_MODULE_0__["default"].push({
+      name: "user.login"
+    });
+  }
+}); //   this.api = api;
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (api);
 
 /***/ }),
 

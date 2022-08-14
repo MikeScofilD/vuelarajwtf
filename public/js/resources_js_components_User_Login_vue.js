@@ -11,7 +11,42 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: "Login",
+  data: function data() {
+    return {
+      email: null,
+      password: null
+    };
+  },
+  methods: {
+    login: function login() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/auth/login", {
+        email: this.email,
+        password: this.password
+      }).then(function (res) {
+        console.log(res); //   localStorage.access_token = res.data.access_token;
+
+        localStorage.setItem("access_token", res.data.access_token);
+
+        _this.$router.push({
+          name: 'user.personal'
+        }); //   const data = {
+        //     name: "test",
+        //     token: res.data.access_token,
+        //   };
+        //   localStorage.setItem("some_data", JSON.stringify(data));
+        //   console.log(JSON.parse(localStorage.getItem("some_data")));
+
+      });
+    }
+  }
+});
 
 /***/ }),
 
@@ -30,30 +65,53 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _vm._m(0);
-};
-
-var staticRenderFns = [function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
   return _c("div", {
     staticClass: "w-25"
   }, [_vm._v("\n  Login\n  "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.email,
+      expression: "email"
+    }],
     staticClass: "form-control mt-3 mb-3",
     attrs: {
       type: "email",
       name: "",
       id: "",
       placeholder: "email"
+    },
+    domProps: {
+      value: _vm.email
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.email = $event.target.value;
+      }
     }
   }), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.password,
+      expression: "password"
+    }],
     staticClass: "form-control mb-3",
     attrs: {
       type: "password",
       name: "",
       id: "",
       placeholder: "password"
+    },
+    domProps: {
+      value: _vm.password
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.password = $event.target.value;
+      }
     }
   }), _vm._v(" "), _c("input", {
     staticClass: "btn btn-primary",
@@ -61,9 +119,17 @@ var staticRenderFns = [function () {
       type: "submit",
       name: "",
       id: ""
+    },
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        return _vm.login.apply(null, arguments);
+      }
     }
   })]);
-}];
+};
+
+var staticRenderFns = [];
 render._withStripped = true;
 
 

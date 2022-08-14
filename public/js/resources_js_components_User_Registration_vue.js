@@ -23,6 +23,9 @@ __webpack_require__.r(__webpack_exports__);
       password_confirmation: ""
     };
   },
+  mounted: function mounted() {
+    console.log(localStorage.getItem("access_token"));
+  },
   methods: {
     storeUser: function storeUser() {
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/users", {

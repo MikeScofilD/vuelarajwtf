@@ -11,9 +11,9 @@
       </thead>
       <tbody>
         <tr v-for="fruit in fruits">
-          <th scope="row">{{fruit.id}}</th>
-          <td>{{fruit.name}}</td>
-          <td>{{fruit.price}}</td>
+          <th scope="row">{{ fruit.id }}</th>
+          <td>{{ fruit.name }}</td>
+          <td>{{ fruit.price }}</td>
         </tr>
       </tbody>
     </table>
@@ -21,27 +21,25 @@
 </template>
 
 <script>
-import axios from 'axios';
-
+import api from "../../api";
 export default {
   name: "Index",
   data() {
     return {
-        fruits: '',
+      fruits: "",
     };
   },
   mounted() {
     this.getFruits();
   },
   methods: {
-    getFruits(){
-        axios.get('/api/fruits')
-        .then(res=>{
-            console.log(res);
-            this.fruits = res.data.data;
-        });
-    }
-  }
+    getFruits() {
+      //   axios.
+      api.get("/api/auth/fruits").then((res) => {
+        this.fruits = res.data.data;
+      });
+    },
+  },
 };
 </script>
 
