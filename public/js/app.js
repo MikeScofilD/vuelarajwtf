@@ -5266,8 +5266,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../api */ "./resources/js/api.js");
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "Index"
+  name: "Index",
+  data: function data() {
+    return {
+      accessToken: null
+    };
+  },
+  mounted: function mounted() {
+    this.getAccessToken();
+  },
+  updated: function updated() {
+    this.getAccessToken();
+  },
+  methods: {
+    getAccessToken: function getAccessToken() {
+      this.accessToken = localStorage.getItem('access_token');
+    },
+    logout: function logout() {
+      var _this = this;
+
+      _api__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/auth/logout').then(function (res) {
+        localStorage.removeItem('access_token');
+
+        _this.$router.push({
+          name: 'user.login'
+        });
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -5288,36 +5317,100 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("div", [_vm._v("\n  Index\n  "), _c("router-link", {
+  return _c("div", [_vm._v("\n  Index\n  "), _vm.accessToken ? _c("router-link", {
     attrs: {
       to: {
         name: "fruit.index"
       }
     }
-  }, [_vm._v("List")]), _vm._v(" "), _c("router-link", {
+  }, [_vm._v("List")]) : _vm._e(), _vm._v(" "), !_vm.accessToken ? _c("router-link", {
     attrs: {
       to: {
         name: "user.login"
       }
     }
-  }, [_vm._v("Login")]), _vm._v(" "), _c("router-link", {
+  }, [_vm._v("Login")]) : _vm._e(), _vm._v(" "), !_vm.accessToken ? _c("router-link", {
     attrs: {
       to: {
         name: "user.registration"
       }
     }
-  }, [_vm._v("Registration")]), _vm._v(" "), _c("router-link", {
+  }, [_vm._v("Registration")]) : _vm._e(), _vm._v(" "), _vm.accessToken ? _c("router-link", {
     attrs: {
       to: {
         name: "user.personal"
       }
     }
-  }, [_vm._v("Personal")]), _vm._v(" "), _c("router-view")], 1);
+  }, [_vm._v("Personal")]) : _vm._e(), _vm._v(" "), _vm.accessToken ? _c("a", {
+    attrs: {
+      href: ""
+    },
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        return _vm.logout.apply(null, arguments);
+      }
+    }
+  }, [_vm._v("Logout")]) : _vm._e(), _vm._v(" "), _c("router-view")], 1);
 };
 
 var staticRenderFns = [];
 render._withStripped = true;
 
+
+/***/ }),
+
+/***/ "./resources/js/api.js":
+/*!*****************************!*\
+  !*** ./resources/js/api.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./router */ "./resources/js/router.js");
+var _require = __webpack_require__(/*! axios */ "./node_modules/axios/index.js"),
+    axios = _require["default"];
+
+
+var api = axios.create(); //start request
+
+api.interceptors.request.use(function (config) {
+  //request
+  if (localStorage.getItem("access_token")) {
+    config.headers.authorization = "Bearer ".concat(localStorage.getItem("access_token"));
+  }
+
+  return config;
+}, function (error) {
+  console.log(22222);
+}); //end requestx
+
+api.interceptors.response.use({}, function (error) {
+  if (error.response.data.message === "Token has expired") {
+    return axios.post("/api/auth/refresh", {}, {
+      headers: {
+        authorization: "Bearer ".concat(localStorage.getItem("access_token"))
+      }
+    }).then(function (res) {
+      localStorage.setItem("access_token", res.data.access_token);
+      error.config.headers.authorization = "Bearer ".concat(localStorage.getItem(res.data.access_token));
+      return api.request(error.config); // console.log(res.data.access_token);
+    }); // console.log("helo");
+  } // console.log(error.response.data.message);
+
+
+  if (error.response.status === 401) {
+    _router__WEBPACK_IMPORTED_MODULE_0__["default"].push({
+      name: "user.login"
+    });
+  }
+}); //   this.api = api;
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (api);
 
 /***/ }),
 
@@ -5400,7 +5493,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
+var route = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: "history",
   routes: [{
     path: "/fruits",
@@ -5426,8 +5519,36 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_router__WEBPACK_IMPORTED_MOD
       return __webpack_require__.e(/*! import() */ "resources_js_components_User_Personal_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/User/Personal */ "./resources/js/components/User/Personal.vue"));
     },
     name: "user.personal"
+  }, {
+    path: "*",
+    component: function component() {
+      return __webpack_require__.e(/*! import() */ "resources_js_components_User_Personal_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/User/Personal */ "./resources/js/components/User/Personal.vue"));
+    },
+    name: "404"
   }]
-}));
+});
+route.beforeEach(function (to, from, next) {
+  var accessToken = localStorage.getItem('access_token');
+
+  if (!accessToken) {
+    if (to.name === 'user.login' || to.name === 'user.registration') {
+      return next();
+    } else {
+      return next({
+        name: 'user.login'
+      });
+    }
+  }
+
+  if (to.name === 'user.login' || to.name === 'user.registration' && accessToken) {
+    return next({
+      name: 'user.personal'
+    });
+  }
+
+  next();
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (route);
 
 /***/ }),
 

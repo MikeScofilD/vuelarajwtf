@@ -41,6 +41,7 @@
       class="btn btn-primary mb-3"
       placeholder="confirm password"
     />
+    <div v-if="error" class="text-danger">{{error}}</div>
   </div>
 </template>
 
@@ -53,6 +54,7 @@ export default {
       email: "",
       password: "",
       password_confirmation: "",
+      error: null,
     };
   },
   mounted(){
@@ -67,9 +69,12 @@ export default {
         password_confirmation: this.password_confirmation
       }).then(
         res=>{
-            console.log(res);
+            localStorage.setItem('access_token',res.data.access_token);
+            this.$router.push({name: 'user.personal'});
         }
-      );
+      ).catch(error=>{
+            this.error = error.response.data.error;
+        });;;
     },
   },
 };

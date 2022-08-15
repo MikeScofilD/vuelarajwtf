@@ -24,6 +24,7 @@
       id=""
       class="btn btn-primary"
     />
+    <div v-if="error" class="danger">{{this.error}}</div>
   </div>
 </template>
 
@@ -35,6 +36,7 @@ export default {
     return {
       email: null,
       password: null,
+      error: null,
     };
   },
   methods: {
@@ -53,7 +55,10 @@ export default {
           //   };
           //   localStorage.setItem("some_data", JSON.stringify(data));
           //   console.log(JSON.parse(localStorage.getItem("some_data")));
-        });
+        })
+        .catch(error=>{
+            this.error = error.response.data.error;
+        });;
     },
   },
 };

@@ -19,14 +19,7 @@ api.interceptors.request.use(
 );
 //end requestx
 api.interceptors.response.use(
-    (config) => {
-        if (localStorage.getItem("access_token")) {
-            config.headers.authorization = `Bearer ${localStorage.getItem(
-                "access_token"
-            )}`;
-        }
-        return config;
-    },
+    {},
     (error) => {
         if (error.response.data.message === "Token has expired") {
             return axios
